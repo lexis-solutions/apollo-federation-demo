@@ -1,5 +1,6 @@
 import { ApolloGateway } from "@apollo/gateway";
 import { ApolloServer } from "apollo-server";
+import waitOn from "wait-on";
 
 export const serviceList = [
   {
@@ -27,6 +28,13 @@ async function buildApp() {
 
 const port = process.env.PORT || 4000;
 
-buildApp()
+console.info("waiting for services to come online...");
+
+waitOn({
+  resources: serviceList.map((service) => service.url),
+  validateStatus: () => true,
+  timeout: 60 * 1000,
+})
+  .then(buildApp)
   .then((server) => server.listen(port))
   .then(({ url }) => console.info(`Gateway server listening on ${url}.`));
