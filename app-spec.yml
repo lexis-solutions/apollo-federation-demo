@@ -1,0 +1,50 @@
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+name: apollo-federation-demo
+region: fra
+services:
+  - environment_slug: node-js
+    github:
+      branch: master
+      deploy_on_push: true
+      repo: Lexis-Solutions/apollo-federation-demo
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: gateway
+    routes:
+      - path: /
+    run_command: yarn start
+    source_dir: /packages/gateway
+    envs:
+      - key: USERS_PUBLIC_URL
+        scope: RUN_TIME
+        value: ${users.PRIVATE_URL}
+      - key: ORDERS_PUBLIC_URL
+        scope: RUN_TIME
+        value: ${orders.PRIVATE_URL}
+  - environment_slug: node-js
+    github:
+      branch: master
+      deploy_on_push: true
+      repo: Lexis-Solutions/apollo-federation-demo
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: users
+    run_command: yarn start
+    internal_ports:
+      - 80
+    source_dir: /packages/users
+  - environment_slug: node-js
+    github:
+      branch: master
+      deploy_on_push: true
+      repo: Lexis-Solutions/apollo-federation-demo
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: orders
+    run_command: yarn start
+    internal_ports:
+      - 80
+    source_dir: /packages/orders
