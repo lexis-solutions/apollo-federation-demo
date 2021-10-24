@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "start": "./node_modules/.bin/ts-node-transpile-only src/index.ts",
+    "dev": "nodemon src/index.ts"
   },
   "dependencies": {
     "@apollo/federation": "^0.33.0",
